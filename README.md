@@ -23,7 +23,7 @@ Configure custom fields dynamically on your Phoenix models
 
   4. Generate the migrations:
 
-  ```mix taglet.install```
+  ```mix attribrutex.install```
 
   5. Run the migrations:
 
