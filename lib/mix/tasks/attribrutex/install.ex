@@ -1,4 +1,4 @@
-defmodule Mix.Tasks.Taglet.Install do
+defmodule Mix.Tasks.Attribrutex.Install do
   @shortdoc "generates Attribrutex migration file for the database"
 
   use Mix.Task
