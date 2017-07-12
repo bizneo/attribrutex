@@ -1,6 +1,5 @@
 defmodule AttribrutexUser do
   use Ecto.Schema
-  use Attribrutex.Model
   import Ecto.Changeset
 
   schema "posts" do
