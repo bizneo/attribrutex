@@ -1,5 +1,6 @@
 defmodule Attribrutex.CustomField do
   use Ecto.Schema
+
   import Ecto.Changeset
   import EctoEnum, only: [defenum: 2]
 
