@@ -15,4 +15,3 @@ defmodule AttribrutexUser do
     |> validate_required([:email])
   end
 end
-

@@ -1,5 +1,7 @@
 use Mix.Config
 
+config :logger, level: :info
+
 config :attribrutex, ecto_repos: [Attribrutex.Repo]
 
 config :attribrutex, repo: Attribrutex.Repo
@@ -11,3 +13,4 @@ config :attribrutex, Attribrutex.Repo,
   database: "attribrutex_test",
   hostname: "localhost",
   poolsize: 10
+
