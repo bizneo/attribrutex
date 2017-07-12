@@ -1,3 +1,5 @@
+[![CircleCI](https://circleci.com/gh/bizneo/Attribrutex/tree/master.svg?style=svg)](https://circleci.com/gh/bizneo/Attribrutex/tree/master)
+
 # Attribrutex
 Configure custom fields dynamically on your Phoenix models
 
