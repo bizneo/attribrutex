@@ -6,7 +6,7 @@ config :attribrutex, repo: Attribrutex.Repo
 
 config :attribrutex, Attribrutex.Repo,
   adapter: Ecto.Adapters.Postgres,
-  username: "postgres",
+  username: "ubuntu",
   password: "postgres",
   database: "attribrutex_test",
   hostname: "localhost",

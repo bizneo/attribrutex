@@ -1,0 +1,13 @@
+version: 2
+jobs:
+  build:
+    working_directory: ~/attribrutex
+    docker:
+      - image: trenpixster/elixir:1.4.0
+      - image: postgres:9.5
+        environment:
+          POSTGRES_USER: ubuntu
+    steps:
+      - checkout
+      - run: mix deps.get
+      - run: env MIX_ENV=ci mix test
