@@ -8,6 +8,11 @@ defmodule Attribrutex.CustomFieldTest do
 
   @valid_attrs %{key: "field", field_type: :string, fieldable_type: "User"}
 
+  setup do
+    @repo.delete_all(CustomField)
+    :ok
+  end
+
   test "changeset with valid attributes" do
     changeset = CustomField.changeset(%CustomField{}, @valid_attrs)
     assert changeset.valid?
