@@ -23,6 +23,8 @@ defmodule Mix.Tasks.Attribrutex.Install do
           add :inserted_at,  :utc_datetime, null: false
           add :updated_at,  :utc_datetime, null: false
         end
+
+        create unique_index(:custom_fields, [:key, :fieldable_type], name: :custom_fields_unique_field)
       end
     end
     """
