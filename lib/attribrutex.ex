@@ -6,6 +6,9 @@ defmodule Attribrutex do
 
   alias Attribrutex.CustomField
 
+  @type ok :: {:ok, CustomField.t}
+  @type error :: {:error, {:ecto, Ecto.Changeset.t}}
+
   @repo Attribrutex.RepoClient.repo
 
   @doc """
@@ -28,6 +31,8 @@ defmodule Attribrutex do
   Setting a context, you can make fields available only for an specific resource
 
   """
+
+  @spec create_custom_field(String.t, atom, list) :: ok | error
   def create_custom_field(key, type, module, opts \\ [])
   def create_custom_field(key, type, module, []) do
     attrs = %{
@@ -70,6 +75,7 @@ defmodule Attribrutex do
   * `:fields` - Return a list of maps with `key` and `type` keys.
 
   """
+  @spec list_custom_fields_for(module, map) :: list
   def list_custom_fields_for(module, opts \\ %{}) do
     module
     |> module_name
