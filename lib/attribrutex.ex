@@ -2,7 +2,12 @@ defmodule Attribrutex do
   @moduledoc """
   Public functions to manage custom fields
   """
+  import Ecto.Query
+
   alias Attribrutex.CustomField
+
+  @type ok :: {:ok, CustomField.t}
+  @type error :: {:error, {:ecto, Ecto.Changeset.t}}
 
   @repo Attribrutex.RepoClient.repo
 
@@ -26,6 +31,8 @@ defmodule Attribrutex do
   Setting a context, you can make fields available only for an specific resource
 
   """
+
+  @spec create_custom_field(String.t, atom, list) :: ok | error
   def create_custom_field(key, type, module, opts \\ [])
   def create_custom_field(key, type, module, []) do
     attrs = %{
@@ -48,11 +55,46 @@ defmodule Attribrutex do
     insert_custom_field(attrs)
   end
 
+
   defp insert_custom_field(attrs) do
     with changeset <- CustomField.changeset(%CustomField{}, attrs) do
       @repo.insert(changeset)
     end
   end
+
+  @doc """
+  List fields for a module, you can pass a map with a `context_id` and
+  `context_type` to search by context.
+
+  It allow to return the fields in different formats adding `mode` param 
+  in the options. `nil` value will return the structs.
+
+  ## Mode params:
+
+  * `:keys` - Only return the key values for every entry.
+  * `:fields` - Return a list of maps with `key` and `type` keys.
+
+  """
+  @spec list_custom_fields_for(module, map) :: list
+  def list_custom_fields_for(module, opts \\ %{}) do
+    module
+    |> module_name
+    |> custom_field_query(opts[:context_id], opts[:context_type])
+    |> select_custom_fields(opts[:mode])
+    |> @repo.all
+  end
+
+  defp custom_field_query(fieldable_type, nil, nil), do: from c in CustomField, where: c.fieldable_type == ^fieldable_type
+  defp custom_field_query(fieldable_type, context_id, context_type) do
+    from c in CustomField,
+      where: c.fieldable_type == ^fieldable_type and
+        c.context_id == ^context_id and
+        c.context_type == ^context_type
+  end
+
+  defp select_custom_fields(query, nil), do: query
+  defp select_custom_fields(query, :keys), do: from c in query, select: c.key
+  defp select_custom_fields(query, :fields), do: from c in query, select: %{key: c.key, type: c.field_type}
 
   defp module_name(module), do: module |> Module.split |> List.last
 end
