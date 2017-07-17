@@ -2,9 +2,9 @@ defmodule AttribrutexUser do
   use Ecto.Schema
   import Ecto.Changeset
 
-  schema "posts" do
+  schema "users" do
     field :email, :string
-    field :custom_fields, :map
+    field :custom_fields, :map, default: %{}
 
     timestamps()
   end

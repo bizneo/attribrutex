@@ -33,6 +33,7 @@ defmodule Attribrutex.Mixfile do
       {:ecto, ">= 2.1.0"},
       {:ecto_enum, "~> 1.0"},
       {:postgrex, "~> 0.13.0"},
+      {:poison, "~> 3.1"},
       {:ex_doc, "~> 0.14", only: :dev, runtime: false},
     ]
   end
