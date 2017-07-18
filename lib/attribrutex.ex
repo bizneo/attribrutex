@@ -97,6 +97,36 @@ defmodule Attribrutex do
   defp select_custom_fields(query, :keys), do: from c in query, select: c.key
   defp select_custom_fields(query, :fields), do: from c in query, select: %{key: c.key, type: c.field_type}
 
+  @doc """
+  Use it to manage custom_fields on building the changesets.
+  You can use the opts like on `list_custom_fields_for/2` to set the
+  `context_id` and `context_type`
+
+  ## Example:
+
+    ```
+    defmodule AttribrutexUser do
+      use Ecto.Schema
+      import Ecto.Changeset
+
+      schema "users" do
+        field :email, :string
+        field :custom_fields, :map, default: %{}
+
+        timestamps()
+      end
+
+      def changeset(struct, params \\ %{}) do
+        struct
+        |> cast(params, [:email])
+        |> validate_required([:email])
+        |> Attribrutex.prepare_custom_fields(params, opts)
+      end
+    end
+    ```
+
+  """
+  @spec prepare_custom_fields(Ecto.Changeset.t, map, map) :: Ecto.Changeset.t
   def prepare_custom_fields(changeset, params, opts \\ %{}) do
     with opts           <- Map.put(opts, :mode, :fields),
          custom_fields  <- list_custom_fields_for(changeset.data.__struct__, opts),
