@@ -12,7 +12,7 @@ defmodule Attribrutex.ChangesetTest do
 
   test "put/3 with valid value" do
     changeset = User.changeset(%User{}, %{email: "asdf@asdf.com"})
-    changeset = Changeset.put(changeset, %{key: :location, type: :string}, "Madrid")
+    changeset = Changeset.put(changeset, %{key: :location, value: "Madrid", type: :string})
     assert changeset.changes == %{
       custom_fields: %{location: "Madrid"},
       email: "asdf@asdf.com"
@@ -21,7 +21,7 @@ defmodule Attribrutex.ChangesetTest do
 
   test "put/3 with invalid value" do
     changeset = User.changeset(%User{}, %{email: "asdf@asdf.com"})
-    changeset = Changeset.put(changeset, %{key: :salary, type: :integer}, "Madrid")
+    changeset = Changeset.put(changeset, %{key: :salary, value: "Madrid", type: :integer})
     refute changeset.valid?
   end
 end

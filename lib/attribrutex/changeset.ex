@@ -1,5 +1,5 @@
 defmodule Attribrutex.Changeset do
-  def put(changeset, %{key: key, type: type}, value) do
+  def put(changeset, %{key: key, value: value, type: type}) do
     value
     |> validate(type)
     |> manage_value(changeset, key, value)
