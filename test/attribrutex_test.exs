@@ -82,7 +82,8 @@ defmodule AttribrutexTest do
     {_, result} = @repo.insert(changeset)
 
     assert changeset.changes.custom_fields.location == "Madrid"
-    assert result.custom_fields == %{location: "Madrid"}
+    assert result.email == "asdf@asdf.com"
+    assert result.custom_fields.location == "Madrid"
   end
 
   test "prepare_custom_fields/3 with invalid attributes" do
@@ -94,5 +95,30 @@ defmodule AttribrutexTest do
 
     refute changeset.valid?
     assert status == :error
+  end
+
+  test "prepare_custom_fields/3 from model changeset" do
+    Attribrutex.create_custom_field("location", :string, AttribrutexUser)
+    changeset = AttribrutexUser.custom_fields_changeset(%AttribrutexUser{}, %{"email" => "asdf@asdf.com", "location" => "Madrid"})
+    {_, result} = @repo.insert(changeset)
+    assert changeset.changes.custom_fields.location == "Madrid"
+    assert result.email == "asdf@asdf.com"
+    assert result.custom_fields.location ==  "Madrid"
+  end
+
+  test "prepare_custom_fields/3 from model changeset filters not present params" do
+    {_, result} = @repo.insert(AttribrutexUser.custom_fields_changeset(%AttribrutexUser{}, %{"email" => "asdf@asdf.com", "location" => "Madrid"}))
+    assert result.email == "asdf@asdf.com"
+    assert result.custom_fields == %{}
+  end
+
+  test "prepare_custom_fields/3 from model changeset works on update" do
+    Attribrutex.create_custom_field("location", :string, AttribrutexUser)
+    {_, struct} = @repo.insert(AttribrutexUser.custom_fields_changeset(%AttribrutexUser{}, %{"email" => "asdf@asdf.com", "location" => "Madrid"}))
+
+    {_, result} = @repo.update(AttribrutexUser.custom_fields_changeset(struct, %{"email" => "update@update.com", "location" => "Brasil"}))
+
+    assert result.email == "update@update.com"
+    assert result.custom_fields.location == "Brasil"
   end
 end

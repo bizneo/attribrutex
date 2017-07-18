@@ -14,4 +14,11 @@ defmodule AttribrutexUser do
     |> cast(params, [:email])
     |> validate_required([:email])
   end
+
+  def custom_fields_changeset(struct, params \\ %{}, opts \\ %{}) do
+    struct
+    |> cast(params, [:email])
+    |> validate_required([:email])
+    |> Attribrutex.prepare_custom_fields(params, opts)
+  end
 end

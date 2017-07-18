@@ -133,7 +133,7 @@ defmodule Attribrutex do
          custom_params  <- get_custom_params(custom_fields, params)
     do
       Enum.reduce(custom_params, changeset, fn(custom_param, changeset) ->
-        changeset = Changeset.put(changeset, custom_param)
+        Changeset.put(changeset, custom_param)
       end)
     end
   end
