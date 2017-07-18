@@ -125,6 +125,17 @@ defmodule Attribrutex do
     end
     ```
 
+  In case of detect a bad type for a field, an error will be added to
+  changeset.errors
+
+  ## Example
+
+    ```
+    #Ecto.Changeset<action: nil, changes: %{email: "example@example.com"},
+    errors: [custom_fields: {"Bad data type", [custom_field: :location]}],
+    data: #AttribrutexUser<>, valid?: false>
+    ```
+
   """
   @spec prepare_custom_fields(Ecto.Changeset.t, map, map) :: Ecto.Changeset.t
   def prepare_custom_fields(changeset, params, opts \\ %{}) do
