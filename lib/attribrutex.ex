@@ -5,6 +5,7 @@ defmodule Attribrutex do
   import Ecto.Query
 
   alias Attribrutex.CustomField
+  alias Attribrutex.Changeset
 
   @type ok :: {:ok, CustomField.t}
   @type error :: {:error, {:ecto, Ecto.Changeset.t}}
@@ -95,6 +96,28 @@ defmodule Attribrutex do
   defp select_custom_fields(query, nil), do: query
   defp select_custom_fields(query, :keys), do: from c in query, select: c.key
   defp select_custom_fields(query, :fields), do: from c in query, select: %{key: c.key, type: c.field_type}
+
+  def prepare_custom_fields(changeset, params, opts \\ %{}) do
+    with opts           <- Map.put(opts, :mode, :fields),
+         custom_fields  <- list_custom_fields_for(changeset.data.__struct__, opts),
+         custom_params  <- get_custom_params(custom_fields, params)
+    do
+      Enum.each(custom_params, fn  custom_param ->
+        changeset = Changeset.put(changeset, custom_param)
+      end)
+    end
+  end
+
+  defp get_custom_params(custom_fields, params) do
+    custom_fields
+    |> Enum.reduce([], fn(%{key: key, type: type}, custom_params) ->
+      if value = params[Atom.to_string(key)] do
+        with new_entry <- %{key: key, value: value, type: type} do
+          List.insert_at(custom_params, -1, new_entry)
+        end
+      end
+    end)
+  end
 
   defp module_name(module), do: module |> Module.split |> List.last
 end
