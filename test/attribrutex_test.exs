@@ -74,14 +74,25 @@ defmodule AttribrutexTest do
     assert custom_field.type == :integer
   end
 
-  test "prepare_custom_fields/3" do
+  test "prepare_custom_fields/3 with valid attributes" do
     Attribrutex.create_custom_field("location", :string, AttribrutexUser)
     changeset = AttribrutexUser.changeset(%AttribrutexUser{}, %{email: "asdf@asdf.com"})
 
-    changeset = Attribrutex.prepare_custom_fields(changeset, %{location: "Madrid"})
+    changeset = Attribrutex.prepare_custom_fields(changeset, %{"location" => "Madrid"})
     {_, result} = @repo.insert(changeset)
 
     assert changeset.changes.custom_fields.location == "Madrid"
     assert result.custom_fields == %{location: "Madrid"}
+  end
+
+  test "prepare_custom_fields/3 with invalid attributes" do
+    Attribrutex.create_custom_field("location", :string, AttribrutexUser)
+    changeset = AttribrutexUser.changeset(%AttribrutexUser{}, %{email: "asdf@asdf.com"})
+
+    changeset = Attribrutex.prepare_custom_fields(changeset, %{"location" => 23})
+    {status, _} = @repo.insert(changeset)
+
+    refute changeset.valid?
+    assert status == :error
   end
 end

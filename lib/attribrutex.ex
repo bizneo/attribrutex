@@ -102,7 +102,7 @@ defmodule Attribrutex do
          custom_fields  <- list_custom_fields_for(changeset.data.__struct__, opts),
          custom_params  <- get_custom_params(custom_fields, params)
     do
-      Enum.each(custom_params, fn  custom_param ->
+      Enum.reduce(custom_params, changeset, fn(custom_param, changeset) ->
         changeset = Changeset.put(changeset, custom_param)
       end)
     end
@@ -111,13 +111,19 @@ defmodule Attribrutex do
   defp get_custom_params(custom_fields, params) do
     custom_fields
     |> Enum.reduce([], fn(%{key: key, type: type}, custom_params) ->
-      if value = params[Atom.to_string(key)] do
-        with new_entry <- %{key: key, value: value, type: type} do
+      if value = params[field_name(key)] do
+        with new_entry <- %{key: key_atom(key), value: value, type: type} do
           List.insert_at(custom_params, -1, new_entry)
         end
       end
     end)
   end
+
+  defp field_name(field) when is_atom(field), do: Atom.to_string(field)
+  defp field_name(field) when is_bitstring(field), do: field
+
+  defp key_atom(key) when is_atom(key), do: key
+  defp key_atom(key) when is_bitstring(key), do: String.to_atom(key)
 
   defp module_name(module), do: module |> Module.split |> List.last
 end

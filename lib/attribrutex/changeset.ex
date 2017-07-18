@@ -8,7 +8,6 @@ defmodule Attribrutex.Changeset do
   defp validate(value, :string), do: is_bitstring(value)
   defp validate(value, :integer), do: is_integer(value)
 
-  defp manage_value(valid?, changeset, key, value)
   defp manage_value(false, changeset, key, value) do
     Ecto.Changeset.add_error(changeset, :custom_fields, "Bad data type", custom_field: key)
   end
