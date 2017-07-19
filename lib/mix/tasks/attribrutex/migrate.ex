@@ -17,7 +17,7 @@ defmodule Mix.Tasks.Attribrutex.Migrate do
 
       def change do
         alter table(:#{table}) do
-          add :custom_fields, :jsonb
+          add :custom_fields, :jsonb, null: false
         end
 
         create index(:#{table}, [:custom_fields], using: "gin")
@@ -25,5 +25,4 @@ defmodule Mix.Tasks.Attribrutex.Migrate do
     end
     """
   end
-
 end

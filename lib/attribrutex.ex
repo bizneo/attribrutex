@@ -5,6 +5,7 @@ defmodule Attribrutex do
   import Ecto.Query
 
   alias Attribrutex.CustomField
+  alias Attribrutex.Changeset
 
   @type ok :: {:ok, CustomField.t}
   @type error :: {:error, {:ecto, Ecto.Changeset.t}}
@@ -55,7 +56,6 @@ defmodule Attribrutex do
     insert_custom_field(attrs)
   end
 
-
   defp insert_custom_field(attrs) do
     with changeset <- CustomField.changeset(%CustomField{}, attrs) do
       @repo.insert(changeset)
@@ -95,6 +95,74 @@ defmodule Attribrutex do
   defp select_custom_fields(query, nil), do: query
   defp select_custom_fields(query, :keys), do: from c in query, select: c.key
   defp select_custom_fields(query, :fields), do: from c in query, select: %{key: c.key, type: c.field_type}
+
+  @doc """
+  Use it to manage custom_fields on building the changesets.
+  You can use the opts like on `list_custom_fields_for/2` to set the
+  `context_id` and `context_type`
+
+  ## Example:
+
+    ```
+    defmodule AttribrutexUser do
+      use Ecto.Schema
+      import Ecto.Changeset
+
+      schema "users" do
+        field :email, :string
+        field :custom_fields, :map, default: %{}
+
+        timestamps()
+      end
+
+      def changeset(struct, params \\ %{}, opts \\ %{}) do
+        struct
+        |> cast(params, [:email])
+        |> validate_required([:email])
+        |> Attribrutex.prepare_custom_fields(params, opts)
+      end
+    end
+    ```
+
+  In case of detect a bad type for a field, an error will be added to
+  changeset.errors
+
+  ## Example
+
+    ```
+    #Ecto.Changeset<action: nil, changes: %{email: "example@example.com"},
+    errors: [custom_fields: {"Bad data type", [custom_field: :location]}],
+    data: #AttribrutexUser<>, valid?: false>
+    ```
+
+  """
+  @spec prepare_custom_fields(Ecto.Changeset.t, map, map) :: Ecto.Changeset.t
+  def prepare_custom_fields(changeset, params, opts \\ %{}) do
+    with opts           <- Map.put(opts, :mode, :fields),
+         custom_fields  <- list_custom_fields_for(changeset.data.__struct__, opts),
+         custom_params  <- get_custom_params(custom_fields, params)
+    do
+      Enum.reduce(custom_params, changeset, fn(custom_param, changeset) ->
+        Changeset.put(changeset, custom_param)
+      end)
+    end
+  end
+
+  defp get_custom_params(custom_fields, params) do
+    Enum.reduce(custom_fields, [], fn(%{key: key, type: type}, custom_params) ->
+      if value = params[field_name(key)] do
+        with new_entry <- %{key: key_atom(key), value: value, type: type} do
+          List.insert_at(custom_params, -1, new_entry)
+        end
+      end
+    end)
+  end
+
+  defp field_name(field) when is_atom(field), do: Atom.to_string(field)
+  defp field_name(field) when is_bitstring(field), do: field
+
+  defp key_atom(key) when is_atom(key), do: key
+  defp key_atom(key) when is_bitstring(key), do: String.to_atom(key)
 
   defp module_name(module), do: module |> Module.split |> List.last
 end
