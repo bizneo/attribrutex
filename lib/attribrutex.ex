@@ -116,7 +116,7 @@ defmodule Attribrutex do
         timestamps()
       end
 
-      def changeset(struct, params \\ %{}) do
+      def changeset(struct, params \\ %{}, opts \\ %{}) do
         struct
         |> cast(params, [:email])
         |> validate_required([:email])
