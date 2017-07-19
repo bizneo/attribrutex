@@ -56,7 +56,6 @@ defmodule Attribrutex do
     insert_custom_field(attrs)
   end
 
-
   defp insert_custom_field(attrs) do
     with changeset <- CustomField.changeset(%CustomField{}, attrs) do
       @repo.insert(changeset)
@@ -150,8 +149,7 @@ defmodule Attribrutex do
   end
 
   defp get_custom_params(custom_fields, params) do
-    custom_fields
-    |> Enum.reduce([], fn(%{key: key, type: type}, custom_params) ->
+    Enum.reduce(custom_fields, [], fn(%{key: key, type: type}, custom_params) ->
       if value = params[field_name(key)] do
         with new_entry <- %{key: key_atom(key), value: value, type: type} do
           List.insert_at(custom_params, -1, new_entry)
