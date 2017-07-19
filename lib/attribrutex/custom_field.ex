@@ -1,4 +1,6 @@
 defmodule Attribrutex.CustomField do
+  @moduledoc false
+
   use Ecto.Schema
 
   import Ecto.Changeset

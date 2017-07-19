@@ -1,4 +1,6 @@
 defmodule Attribrutex.Changeset do
+  @moduledoc false
+
   def put(changeset, %{key: key, value: value, type: type}) do
     value
     |> validate(type)

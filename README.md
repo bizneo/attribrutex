@@ -72,7 +72,7 @@ As you can see you can specify a set of supported **types of data**:
 - `:string`
 - `:integer`
 
-If you need to create an field on specific context you can use the opts
+If you need to create a field on specific context you can use the opts
 to make the new field belongs to a specific resource:
 
   ```elixir
@@ -130,3 +130,13 @@ set on the changeset:
  errors: [custom_fields: {"Bad data type", [custom_field: :location]}],
  data: #AttribrutexUser<>, valid?: false>
  ```
+
+## Testing
+
+Clone the repo and fetch dependencies with `mix deps.get`
+
+Executing `mix test` should run all the tests.
+
+## License
+
+See [LICENSE](https://github.com/bizneo/attribrutex/blob/master/LICENSE.md)
