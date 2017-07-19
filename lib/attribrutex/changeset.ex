@@ -8,15 +8,14 @@ defmodule Attribrutex.Changeset do
   defp validate(value, :string), do: is_bitstring(value)
   defp validate(value, :integer), do: is_integer(value)
 
-  defp manage_value(false, changeset, key, value) do
+  defp manage_value(false, changeset, key, _value) do
     Ecto.Changeset.add_error(changeset, :custom_fields, "Bad data type", custom_field: key)
   end
   defp manage_value(true, changeset, key, value) do
     with custom_fields <- custom_fields_changes(changeset, key, value),
-         changes <- Map.put(changeset.changes, :custom_fields, custom_fields),
-         changeset <- Map.put(changeset, :changes, changes)
+         changes <- Map.put(changeset.changes, :custom_fields, custom_fields)
     do
-      changeset
+      Map.put(changeset, :changes, changes)
     end
   end
 
