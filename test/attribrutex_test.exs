@@ -97,6 +97,29 @@ defmodule AttribrutexTest do
     assert status == :error
   end
 
+  test "prepare_custom_fields/3 with context" do
+    Attribrutex.create_custom_field("location", :string, AttribrutexUser, context_id: 1, context_type: "User" )
+    changeset = AttribrutexUser.changeset(%AttribrutexUser{}, %{email: "asdf@asdf.com"})
+
+    changeset = Attribrutex.prepare_custom_fields(changeset, %{"location" => "Madrid"}, %{context_id: 1, context_type: "User"})
+    {_, result} = @repo.insert(changeset)
+
+    assert changeset.changes.custom_fields.location == "Madrid"
+    assert result.email == "asdf@asdf.com"
+    assert result.custom_fields.location == "Madrid"
+  end
+
+  test "prepare_custom_fields/3 with bad context" do
+    Attribrutex.create_custom_field("location", :string, AttribrutexUser, context_id: 1, context_type: "User" )
+    changeset = AttribrutexUser.changeset(%AttribrutexUser{}, %{email: "asdf@asdf.com"})
+
+    changeset = Attribrutex.prepare_custom_fields(changeset, %{"location" => "Madrid"}, %{context_id: 1, context_type: "Location"})
+    {_, result} = @repo.insert(changeset)
+
+    assert result.email == "asdf@asdf.com"
+    assert result.custom_fields == %{}
+  end
+
   test "prepare_custom_fields/3 from model changeset" do
     Attribrutex.create_custom_field("location", :string, AttribrutexUser)
     changeset = AttribrutexUser.custom_fields_changeset(%AttribrutexUser{}, %{"email" => "asdf@asdf.com", "location" => "Madrid"})
@@ -121,4 +144,5 @@ defmodule AttribrutexTest do
     assert result.email == "update@update.com"
     assert result.custom_fields.location == "Brasil"
   end
+
 end
