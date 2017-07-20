@@ -67,18 +67,23 @@ i.e.:
   Attribrutex.create_custom_field("location", :string, User)
   ```
 
-As you can see you can specify a set of supported **types of data**:
+As you can see you can specify a set of supported **data types**:
 
 - `:string`
 - `:integer`
 
-If you need to create a field on specific context you can use the opts
+If you need to create a field on specific context, for example,
+you need every user to have their own fields, not accessible for
+any other user, then, you can use the opts
 to make the new field belongs to a specific resource:
 
   ```elixir
-  Attribrutex.create_custom_field("location", :string, User,
+  Attribrutex.create_custom_field("location", :string, Job,
                                    context_id: 1, context_type: "User")
   ```
+
+After that, you will have a "location" string field on the `Job` model
+and only accessible by the user with the id 1
 
 ### Listing fields
 
