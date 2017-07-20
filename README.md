@@ -71,6 +71,8 @@ As you can see you can specify a set of supported **data types**:
 
 - `:string`
 - `:integer`
+- `:boolean`
+- `:float`
 
 If you need to create a field on specific context, for example,
 you need every user to have their own fields, not accessible for
