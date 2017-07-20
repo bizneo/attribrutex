@@ -59,7 +59,7 @@ Attribrutex works with three basic functions:
 ### Creating a new field
 
 Using `create_custom_field(key, type, module, opts \\ []` you can
-create a new field for a specific module.k
+create a new field for a specific module
 
 i.e.:
 
