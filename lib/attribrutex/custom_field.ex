@@ -1,5 +1,7 @@
 defmodule Attribrutex.CustomField do
-  @moduledoc false
+  @moduledoc """
+  This module modelate the table for created custom fields
+  """
 
   use Ecto.Schema
 
@@ -22,6 +24,11 @@ defmodule Attribrutex.CustomField do
     :context_id, :context_type]
   @required_custom_field_params [:key, :field_type, :fieldable_type]
 
+  @doc """
+  This function allows to add new entries to the table and validate
+  that keys are not repeated for a model or for a model and context
+  if it exists
+  """
   def changeset(struct, params \\ %{}) do
     struct
     |> cast(params, @custom_field_params)
