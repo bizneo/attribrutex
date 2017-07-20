@@ -4,7 +4,11 @@ defmodule Attribrutex.CustomField do
   import Ecto.Changeset
   import EctoEnum, only: [defenum: 2]
 
-  defenum FieldTypeEnum, string: 0, integer: 1
+  defenum FieldTypeEnum,
+    string:   0,
+    integer:  1,
+    float:    2,
+    boolean:  3
 
   schema "custom_fields" do
     field :key, :string, null: false
