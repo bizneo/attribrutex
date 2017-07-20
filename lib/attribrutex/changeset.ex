@@ -1,6 +1,16 @@
 defmodule Attribrutex.Changeset do
-  @moduledoc false
+  @moduledoc """
+  Contains the functions to manage changes on changeset
+  """
 
+  @doc """
+  Passing a changeset and a struct with `:key`, `:value` and `:type`
+  will try to add to the changeset changes.
+
+  If the given value doesn't match with the type, an error will be
+  added to changeset errors.
+  """
+  @spec put(Ecto.Changeset.t, map) :: Ecto.Changeset.t
   def put(changeset, %{key: key, value: value, type: type}) do
     value
     |> validate(type)
