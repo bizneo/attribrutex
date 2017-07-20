@@ -16,7 +16,7 @@ Configure custom fields dynamically on your Phoenix models
   2. Configure Attribrutex to use your repo in `config/config.exs`:
 
   ```elixir
-  config :Attribrutex, repo: ApplicationName.Repo
+  config :attribrutex, repo: ApplicationName.Repo
   ```
 
   3. Install your dependencies:
@@ -135,6 +135,39 @@ set on the changeset:
  errors: [custom_fields: {"Bad data type", [custom_field: :location]}],
  data: #AttribrutexUser<>, valid?: false>
  ```
+
+## Usage example
+
+Here we expose a full workflow example where we create a field, list it
+and add some value.
+
+  ```elixir
+  Attribrutex.create_custom_field("sample", :string, AttribrutexUser)
+  # {:ok,
+  #   %Attribrutex.CustomField{__meta__: #Ecto.Schema.Metadata<:loaded, "custom_fields">,
+  #     context_id: nil, context_type: nil, field_type: :string,
+  #     fieldable_type: "AttribrutexUser", id: 1231,
+  #     inserted_at: ~N[2017-07-20 13:08:35.134738], key: "sample",
+  #     updated_at: ~N[2017-07-20 13:08:35.134761]}}
+
+  Attribrutex.list_custom_fields_for(AttribrutexUser)
+  # [%Attribrutex.CustomField{__meta__: #Ecto.Schema.Metadata<:loaded, "custom_fields">,
+  #   context_id: nil, context_type: nil, field_type: :string,
+  #   fieldable_type: "AttribrutexUser", id: 1248,
+  #   inserted_at: ~N[2017-07-20 13:14:25.997483], key: "sample",
+  #   updated_at: ~N[2017-07-20 13:14:25.997505]}]
+
+  Attribrutex.list_custom_fields_for(AttribrutexUser, %{mode: :fields})
+  # [%{key: "sample", type: :string}]
+
+  Attribrutex.list_custom_fields_for(AttribrutexUser, %{mode: :keys})
+  # ["sample"]
+
+  AttribrutexUser.changeset(%AttribrutexUser{}, %{email: "example@example.com", location: "Paris"})
+  # Ecto.Changeset<action: nil,
+  #  changes: %{custom_fields: %{location: "Madrid"}, email: "asdf@asdf.com"},
+  #  errors: [], data: #AttribrutexUser<>, valid?: true>
+  ```
 
 ## Testing
 
