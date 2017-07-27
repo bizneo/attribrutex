@@ -44,8 +44,7 @@ Configure custom fields dynamically on your Phoenix models
   mix attribrutex.migrate <table_name>
   mix ecto.migrate
   ```
-  7. Add the field to the schema in your models (is important to set a
-     default value):
+  7. Add the field to the schema in your models:
 
   ```elixir
   field :custom_fields, :map, default: %{}
