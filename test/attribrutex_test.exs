@@ -13,7 +13,6 @@ defmodule AttribrutexTest do
 
   setup do
     @repo.delete_all(Attribrutex.CustomField)
-    setup_tenant()
     :ok
   end
 
@@ -40,6 +39,8 @@ defmodule AttribrutexTest do
   end
 
   test "[multi tenant] create_custom_field/4" do
+    setup_tenant()
+
     {status, resource} =
       Attribrutex.create_custom_field("sample", :string, AttribrutexUser, prefix: @tenant_id)
 
@@ -89,6 +90,18 @@ defmodule AttribrutexTest do
     assert length(result)    == 1
     assert custom_field.key  == "stuff"
     assert custom_field.type == :integer
+  end
+
+  test "[multi tenant] list_custom_fields_for/2" do
+    setup_tenant()
+
+    Attribrutex.create_custom_field("stuff", :integer, User, prefix: @tenant_id)
+
+    result = Attribrutex.list_custom_fields_for(User, %{prefix: @tenant_id})
+    custom_field = Enum.at(result, 0)
+
+    assert length(result) == 1
+    assert custom_field.__struct__ == Attribrutex.CustomField
   end
 
   test "prepare_custom_fields/3 with valid attributes" do

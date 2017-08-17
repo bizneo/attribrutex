@@ -81,7 +81,7 @@ defmodule Attribrutex do
     |> module_name
     |> custom_field_query(opts[:context_id], opts[:context_type])
     |> select_custom_fields(opts[:mode])
-    |> @repo.all
+    |> @repo.all(prefix: opts[:prefix])
   end
 
   defp custom_field_query(fieldable_type, nil, nil), do: from c in CustomField, where: c.fieldable_type == ^fieldable_type
