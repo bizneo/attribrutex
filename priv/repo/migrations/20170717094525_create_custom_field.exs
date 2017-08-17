@@ -13,9 +13,9 @@ defmodule Repo.Migrations.CreateCustomField do
       add :updated_at,  :utc_datetime, null: false
     end
 
-    execute "CREATE UNIQUE INDEX custom_fields_unique_index ON custom_fields (key, fieldable_type, context_id, context_type) WHERE context_id IS NOT NULL AND context_type IS NOT NULL;"
-    execute "CREATE UNIQUE INDEX custom_fields_unique_index_no_context_id ON custom_fields (key, fieldable_type, context_id) WHERE context_id IS NOT NULL AND context_type IS NULL;"
-    execute "CREATE UNIQUE INDEX custom_fields_unique_index_no_context_type ON custom_fields (key, fieldable_type, context_type) WHERE context_id IS NULL AND context_type IS NOT NULL;"
-    execute "CREATE UNIQUE INDEX custom_fields_unique_index_only_fieldable_type ON custom_fields (key, fieldable_type) WHERE context_id IS NULL AND context_type IS NULL;"
+    create unique_index(:custom_fields, [:key, :fieldable_type, :context_id, :context_type], where: "context_id IS NOT NULL AND context_type IS NOT NULL", name: :custom_fields_unique_index)
+    create unique_index(:custom_fields, [:key, :fieldable_type, :context_id], where: "context_id IS NOT NULL AND context_type IS NULL", name: :custom_fields_unique_index_no_context_id)
+    create unique_index(:custom_fields, [:key, :fieldable_type, :context_type], where: "context_id IS NULL AND context_type IS NOT NULL", name: :custom_fields_unique_index_no_context_type)
+    create unique_index(:custom_fields, [:key, :fieldable_type], where: "context_id IS NULL AND context_type IS NULL", name: :custom_fields_unique_index_only_fieldable_type)
   end
 end
