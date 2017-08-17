@@ -175,6 +175,21 @@ defmodule AttribrutexTest do
     assert result.custom_fields.location == "Brasil"
   end
 
+  test "[multi tenant] prepare_custom_fields/3 with valid attributes" do
+    setup_tenant()
+
+    Attribrutex.create_custom_field("location", :string, AttribrutexUser, prefix: @tenant_id)
+    changeset = AttribrutexUser.changeset(%AttribrutexUser{}, %{email: "asdf@asdf.com"})
+
+    changeset = Attribrutex.prepare_custom_fields(changeset, %{"location" => "Madrid"}, %{prefix: @tenant_id})
+    {_, result} = @repo.insert(changeset, prefix: @tenant_id)
+
+    assert changeset.changes.custom_fields.location == "Madrid"
+    assert result.email == "asdf@asdf.com"
+    assert result.custom_fields.location == "Madrid"
+  end
+
+
   defp setup_tenant do
     migrations_path = Path.join(build_repo_priv(@repo), "migrations")
 
