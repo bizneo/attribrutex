@@ -35,16 +35,7 @@ defmodule Attribrutex do
 
   @spec create_custom_field(String.t, atom, list) :: ok | error
   def create_custom_field(key, type, module, opts \\ [])
-  def create_custom_field(key, type, module, []) do
-    attrs = %{
-      key: key,
-      field_type: type,
-      fieldable_type: module_name(module)
-    }
-
-    insert_custom_field(attrs)
-  end
-  def create_custom_field(key, type, module, [context_id: context_id, context_type: context_type]) do
+  def create_custom_field(key, type, module, [context_id: context_id, context_type: context_type] = opts) do
     attrs = %{
       key: key,
       field_type: type,
@@ -53,12 +44,21 @@ defmodule Attribrutex do
       context_type: context_type
     }
 
-    insert_custom_field(attrs)
+    insert_custom_field(attrs, opts)
+  end
+  def create_custom_field(key, type, module, opts) do
+    attrs = %{
+      key: key,
+      field_type: type,
+      fieldable_type: module_name(module)
+    }
+
+    insert_custom_field(attrs, opts)
   end
 
-  defp insert_custom_field(attrs) do
+  defp insert_custom_field(attrs, opts) do
     with changeset <- CustomField.changeset(%CustomField{}, attrs) do
-      @repo.insert(changeset)
+      @repo.insert(changeset, opts)
     end
   end
 
@@ -81,7 +81,7 @@ defmodule Attribrutex do
     |> module_name
     |> custom_field_query(opts[:context_id], opts[:context_type])
     |> select_custom_fields(opts[:mode])
-    |> @repo.all
+    |> @repo.all(prefix: opts[:prefix])
   end
 
   defp custom_field_query(fieldable_type, nil, nil), do: from c in CustomField, where: c.fieldable_type == ^fieldable_type
