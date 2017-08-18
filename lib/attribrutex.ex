@@ -3,14 +3,13 @@ defmodule Attribrutex do
   Public functions to manage custom fields
   """
   import Ecto.Query
+  import Attribrutex.RepoClient
 
   alias Attribrutex.CustomField
   alias Attribrutex.Changeset
 
   @type ok :: {:ok, CustomField.t}
   @type error :: {:error, {:ecto, Ecto.Changeset.t}}
-
-  @repo Attribrutex.RepoClient.repo
 
   @doc """
   Creates a new field for a module.
@@ -58,7 +57,7 @@ defmodule Attribrutex do
 
   defp insert_custom_field(attrs, opts) do
     with changeset <- CustomField.changeset(%CustomField{}, attrs) do
-      @repo.insert(changeset, opts)
+      repo().insert(changeset, opts)
     end
   end
 
@@ -81,7 +80,7 @@ defmodule Attribrutex do
     |> module_name
     |> custom_field_query(opts[:context_id], opts[:context_type])
     |> select_custom_fields(opts[:mode])
-    |> @repo.all(prefix: opts[:prefix])
+    |> repo().all(prefix: opts[:prefix])
   end
 
   defp custom_field_query(fieldable_type, nil, nil), do: from c in CustomField, where: c.fieldable_type == ^fieldable_type
