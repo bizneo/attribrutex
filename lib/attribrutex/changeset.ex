@@ -13,6 +13,7 @@ defmodule Attribrutex.Changeset do
   @spec put(Ecto.Changeset.t, map) :: Ecto.Changeset.t
   def put(changeset, %{key: key, value: value, type: type}) do
     value
+    |> cast_to_type(type)
     |> validate(type)
     |> manage_value(changeset, key, value)
   end
@@ -30,6 +31,34 @@ defmodule Attribrutex.Changeset do
          changes <- Map.put(changeset.changes, :custom_fields, custom_fields)
     do
       Map.put(changeset, :changes, changes)
+    end
+  end
+
+  defp cast_to_type(value, :boolean) when is_boolean(value), do: value
+  defp cast_to_type(value, :boolean) do
+    case value do
+      "true" -> true
+      "1" -> true
+      "false" -> false
+      "0" -> false
+      _ -> false
+    end
+  end
+  defp cast_to_type(value, :integer) when is_integer(value), do: value
+  defp cast_to_type(value, :integer) do
+    try do
+      String.to_integer(value)
+    rescue
+      _ -> value
+    end
+  end
+  defp cast_to_type(value, :string), do: value
+  defp cast_to_type(value, :float) when is_float(value), do: value
+  defp cast_to_type(value, :float) do
+    try do
+      String.to_float(value)
+    rescue
+      _ -> value
     end
   end
 
