@@ -11,8 +11,7 @@ defmodule Attribrutex.CustomField do
   defenum FieldTypeEnum,
     string:   0,
     integer:  1,
-    float:    2,
-    boolean:  3
+    float:    2
 
   schema "custom_fields" do
     field :key, :string, null: false
